@@ -93,18 +93,22 @@ namespace NeonService
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             string NeonExeName = "neonauth.txt";
-            string ExtraPath = "AppData\\Local\\Programs\\neonai\\resources\\extraResources\\service";
-            var assemblyLocation = Assembly.GetEntryAssembly()?.Location;
-            var currentPath = Path.GetDirectoryName(assemblyLocation);
-            var finalPath = Path.GetFullPath(Path.Combine(currentPath != null ? currentPath : "", @"..\..\..\..\..\..\..\"));
+            //string ExtraPath = "AppData\\Local\\Programs\\neonai\\resources\\extraResources\\service";
+            //var assemblyLocation = Assembly.GetEntryAssembly()?.Location;
+            //var currentPath = Path.GetDirectoryName(assemblyLocation);
+            //var finalPath = Path.GetFullPath(Path.Combine(currentPath != null ? currentPath : "", @"..\..\..\..\..\..\..\..\")); //..\..\..\..\..\..\..\
 
-            var finalExecutable = $"{finalPath}{ExtraPath}\\{NeonExeName}";
+            //var finalExecutable = $"{finalPath}{ExtraPath}\\{NeonExeName}";
+            var finalExecutable = @$"C:\{NeonExeName}";
+
+            _logger.LogInformation("Checking current directory {path}", Environment.CurrentDirectory);
+            _logger.LogInformation("Scanning path {path}", Path.GetFullPath(finalExecutable));
 
             if (File.Exists(finalExecutable))
             {
                 string authtext = File.ReadAllText(finalExecutable);
 
-                _logger.LogInformation("Neon Service detected auth token");
+                _logger.LogInformation("Neon Service detected auth token at {path}", finalExecutable);
 
                 Envs envs = new Envs();
 
@@ -137,7 +141,7 @@ namespace NeonService
             }
             else
             {
-                _logger.LogInformation("Neon Service cannot detect authentication file");
+                _logger.LogInformation("Neon Service cannot detect authentication file at {path}", finalExecutable);
             }
         }
     }

@@ -40,7 +40,7 @@ namespace NeonService.Functions
                         {
                             if (data.path == "")
                             {
-                                string defaultPath = "C:\\";
+                                string defaultPath = @"C:\";
                                 string[] entries = Directory.GetFiles(defaultPath).Select(x => WebUtility.UrlEncode(x)).ToArray(); //Directory.GetFileSystemEntries("C:\\Users", "*", SearchOption.AllDirectories)
                                 string[] directories = Directory.GetDirectories(defaultPath).Select(x => WebUtility.UrlEncode(x)).ToArray();
                                 string resultFiles = JsonConvert.SerializeObject(entries);
@@ -48,7 +48,7 @@ namespace NeonService.Functions
                                 string resultJsonString = $"{{ \"deviceID\": \"{data.deviceID}\", \"toID\": \"{forRequestToConnectionID}\", \"path\": \"{WebUtility.UrlEncode(defaultPath)}\", \"dirs\": {resultDirs}, \"files\": {resultFiles} }}";
                                 _logger.LogInformation("Directory List: {dirs}", resultJsonString);
 
-                                Requests requests = new Requests();
+                                Requests requests = new Requests(_logger);
                                 requests.DeviceFilesListResRequest(resultJsonString);
                             }
                             else
@@ -61,7 +61,7 @@ namespace NeonService.Functions
                                 string resultJsonString = $"{{ \"deviceID\": \"{data.deviceID}\",  \"toID\": \"{forRequestToConnectionID}\", \"path\": \"{WebUtility.UrlEncode(defaultPath)}\", \"dirs\": {resultDirs}, \"files\": {resultFiles} }}";
                                 _logger.LogInformation("Directory List: {dirs}", resultJsonString);
 
-                                Requests requests = new Requests();
+                                Requests requests = new Requests(_logger);
                                 requests.DeviceFilesListResRequest(resultJsonString);
                             }
                         }

@@ -1,0 +1,5 @@
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\win-x86\appsettings.Development.json
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\win-x86\appsettings.json
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\win-x86\NeonService.pdb
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\win-x86\aspnetcorev2_inprocess.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\win-x86\NeonService.exe

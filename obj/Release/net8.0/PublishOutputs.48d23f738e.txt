@@ -7,6 +7,11 @@ C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\N
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\NeonService.pdb
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Microsoft.Extensions.DependencyModel.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Microsoft.Extensions.Hosting.WindowsServices.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Microsoft.IdentityModel.Logging.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Microsoft.IdentityModel.Tokens.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Newtonsoft.Json.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Serilog.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Serilog.AspNetCore.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Serilog.Extensions.Hosting.dll
@@ -16,5 +21,6 @@ C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\S
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Serilog.Sinks.Console.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Serilog.Sinks.Debug.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\Serilog.Sinks.File.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\System.ServiceProcess.ServiceController.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\publish\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll

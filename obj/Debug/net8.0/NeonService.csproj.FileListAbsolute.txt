@@ -35,3 +35,4 @@ C:\Users\paulo\source\repos\NeonService\NeonService\bin\Debug\net8.0\Microsoft.I
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\paulo\source\repos\NeonService\NeonService\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\obj\Debug\net8.0\NeonService.sourcelink.json

@@ -11,6 +11,11 @@ namespace NeonService.Functions
 {
     public class Requests
     {
+        private readonly ILogger<Worker> _logger;
+        public Requests(ILogger<Worker> logger) 
+        {
+            _logger = logger;
+        }
         public void DeviceFilesListResRequest (string responsetoken) 
         {
             Envs envs = new Envs();
@@ -31,7 +36,7 @@ namespace NeonService.Functions
 
                         var response = wb.UploadValues(apiUrl, "POST", data);
                         string responseInString = Encoding.UTF8.GetString(response);
-                        Console.WriteLine($"{responseInString}");
+                        _logger.LogInformation($"Server Response: {responseInString}");
                     }
                 }
                 catch (Exception ex)

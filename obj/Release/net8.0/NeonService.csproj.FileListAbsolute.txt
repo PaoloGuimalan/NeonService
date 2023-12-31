@@ -29,3 +29,10 @@ C:\Users\paulo\source\repos\NeonService\NeonService\obj\Release\net8.0\refint\Ne
 C:\Users\paulo\source\repos\NeonService\NeonService\obj\Release\net8.0\NeonService.pdb
 C:\Users\paulo\source\repos\NeonService\NeonService\obj\Release\net8.0\NeonService.genruntimeconfig.cache
 C:\Users\paulo\source\repos\NeonService\NeonService\obj\Release\net8.0\ref\NeonService.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\Newtonsoft.Json.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\bin\Release\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\paulo\source\repos\NeonService\NeonService\obj\Release\net8.0\NeonService.sourcelink.json
