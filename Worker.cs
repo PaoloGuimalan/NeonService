@@ -1,13 +1,16 @@
-using NeonService.Models;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NeonService.Functions;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.Reflection;
-using System.Reflection.PortableExecutable;
-using Newtonsoft.Json.Linq;
-using System.IdentityModel.Tokens.Jwt;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using NeonService.Models;
 using NeonService.Variables;
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using System.Timers;
 
 namespace NeonService
 {
@@ -15,10 +18,12 @@ namespace NeonService
     {
         private readonly ILogger<Worker> _logger;
         private HttpClient client;
+        private System.Timers.Timer restartTimer;
 
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
+            InitializeRestartTimer(); // Initialize the timer in the constructor
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -29,13 +34,14 @@ namespace NeonService
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Neon Service stopping");
             client.Dispose();
             return base.StopAsync(cancellationToken);
         }
 
         public void ActionDeterminer(string listener, string result, string connectionID)
         {
-            switch(listener)
+            switch (listener)
             {
                 case "devicefileslist":
                     Access AccessNeon = new Access(_logger);
@@ -52,7 +58,7 @@ namespace NeonService
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(authtoken) as JwtSecurityToken;
 
-            if(jsonToken != null)
+            if (jsonToken != null)
             {
                 foreach (var claim in jsonToken.Claims)
                 {
@@ -63,14 +69,13 @@ namespace NeonService
                         var handlerauthcred = new JwtSecurityTokenHandler();
                         var jsonauthcred = handlerauthcred.ReadToken(authdata.token) as JwtSecurityToken;
 
-                        if(jsonauthcred != null)
+                        if (jsonauthcred != null)
                         {
                             foreach (var credclaim in jsonauthcred.Claims)
                             {
                                 if (credclaim.Type.Contains("userID"))
                                 {
                                     var data = JsonConvert.DeserializeObject<ResponseData>(result);
-                                    //_logger.LogInformation("Neon Auth Token: {token}", credclaim.Value);
                                     _logger.LogInformation("Neon Service: {listener} {token}", data.data.listener, data.data.result);
 
                                     ActionDeterminer(data.data.listener, data.data.result, credclaim.Value);
@@ -90,59 +95,110 @@ namespace NeonService
             }
         }
 
+        private void InitializeRestartTimer()
+        {
+            restartTimer = new System.Timers.Timer();
+            restartTimer.Interval = 10000; // 10 seconds interval
+            restartTimer.AutoReset = false; // Only fire once per interval
+            restartTimer.Elapsed += async (sender, e) => await RestartTimerElapsed();
+        }
+
+        private async Task RestartTimerElapsed()
+        {
+            //_logger.LogInformation("Restart timer elapsed. No data received for 10 seconds. Restarting the connection.");
+            restartTimer.Stop();
+
+            // Trigger the cancellation token to restart the connection
+            await ExecuteAsync(CancellationToken.None); // This will restart the ExecuteAsync method
+        }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             string NeonExeName = "neonauth.txt";
-            //string ExtraPath = "AppData\\Local\\Programs\\neonai\\resources\\extraResources\\service";
-            //var assemblyLocation = Assembly.GetEntryAssembly()?.Location;
-            //var currentPath = Path.GetDirectoryName(assemblyLocation);
-            //var finalPath = Path.GetFullPath(Path.Combine(currentPath != null ? currentPath : "", @"..\..\..\..\..\..\..\..\")); //..\..\..\..\..\..\..\
-
-            //var finalExecutable = $"{finalPath}{ExtraPath}\\{NeonExeName}";
             var finalExecutable = @$"C:\{NeonExeName}";
 
-            _logger.LogInformation("Checking current directory {path}", Environment.CurrentDirectory);
-            _logger.LogInformation("Scanning path {path}", Path.GetFullPath(finalExecutable));
+            //_logger.LogInformation("Checking current directory {path}", Environment.CurrentDirectory);
+            //_logger.LogInformation("Scanning path {path}", Path.GetFullPath(finalExecutable));
 
-            if (File.Exists(finalExecutable))
+            while (!stoppingToken.IsCancellationRequested)
             {
-                string authtext = File.ReadAllText(finalExecutable);
-
-                _logger.LogInformation("Neon Service detected auth token at {path}", finalExecutable);
-
-                Envs envs = new Envs();
-
-                var requestUri = $"{envs.API}{envs.SSEHandshake}{authtext}"; //neonaiserver.onrender.com
-                var stream = client.GetStreamAsync(requestUri).Result;
-
-                using (var reader = new StreamReader(stream))
+                try
                 {
-                    while (!reader.EndOfStream)
+                    if (client != null)
+                        client.Dispose(); // Dispose of the current client
+
+                    client = new HttpClient(); // Create a new HttpClient instance
+
+                    var authtext = await ReadAuthTokenAsync(finalExecutable);
+
+                    Envs envs = new Envs();
+                    var requestUri = $"{envs.API}{envs.SSEHandshake}{authtext}"; // neonaiserver.onrender.com
+
+                    using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3000))) // Set your desired timeout value
                     {
-                        while (!stoppingToken.IsCancellationRequested)
+                        var stream = await client.GetStreamAsync(requestUri).WithCancellation(cts.Token);
+                        restartTimer.Start(); // Start the timer when the stream is established
+
+                        using (var reader = new StreamReader(stream))
                         {
-                            try
+                            while (!reader.EndOfStream && !stoppingToken.IsCancellationRequested)
                             {
-                                var line = reader.ReadLine();
-                                if (line.Contains("data"))
+                                var line = await reader.ReadLineAsync();
+                                if (line != null && line.Contains("data"))
                                 {
                                     ExecuteEvent(line, authtext);
+                                    restartTimer.Stop(); // Reset the timer on each received data
+                                    restartTimer.Start();
                                 }
-                            }
-                            catch(Exception ex)
-                            {
-                                _logger.LogInformation("Stream Ended");
-                                //await Task.Delay(3000, stoppingToken);
-                                await StartAsync(stoppingToken);
                             }
                         }
                     }
+
+                    // Log when the stream ends
+                    _logger.LogInformation("Stream ended. Restarting in 3 seconds.");
+                    await Task.Delay(3000, stoppingToken);
                 }
+                catch (OperationCanceledException)
+                {
+                    _logger.LogInformation("Stream connection timed out. Restarting in 3 seconds.");
+                    await Task.Delay(3000, stoppingToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogInformation($"Stream disconnected. Retrying in 3 seconds. Exception: {ex.Message}");
+                    await Task.Delay(3000, stoppingToken);
+                }
+            }
+        }
+
+        private async Task<string> ReadAuthTokenAsync(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                return await File.ReadAllTextAsync(filePath);
             }
             else
             {
-                _logger.LogInformation("Neon Service cannot detect authentication file at {path}", finalExecutable);
+                _logger.LogInformation("Neon Service cannot detect authentication file at {path}", filePath);
+                return string.Empty;
             }
+        }
+    }
+
+    public static class TaskExtensions
+    {
+        public static async Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
+            {
+                if (task != await Task.WhenAny(task, tcs.Task))
+                {
+                    throw new OperationCanceledException(cancellationToken);
+                }
+            }
+
+            return await task; // Unwrap the original exception
         }
     }
 }
