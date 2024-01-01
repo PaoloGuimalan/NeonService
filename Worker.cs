@@ -98,7 +98,7 @@ namespace NeonService
         private void InitializeRestartTimer()
         {
             restartTimer = new System.Timers.Timer();
-            restartTimer.Interval = 10000; // 10 seconds interval
+            restartTimer.Interval = 40000; // 10 seconds interval
             restartTimer.AutoReset = false; // Only fire once per interval
             restartTimer.Elapsed += async (sender, e) => await RestartTimerElapsed();
         }

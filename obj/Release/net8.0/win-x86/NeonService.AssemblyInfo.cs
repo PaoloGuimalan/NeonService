@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NeonService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+259068cb1c557fe32b4eff0bd423dcf871a05247")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82e80bc6311949d3709502229318d580d0b03dae")]
 [assembly: System.Reflection.AssemblyProductAttribute("NeonService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NeonService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
